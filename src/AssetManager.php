@@ -9,7 +9,45 @@ class AssetManager
      */
     public function renderAssetTags(): string
     {
-        return $this->scripts()."\n".$this->styles();
+        return $this->getPreloadImportMap()."\n".$this->scripts()."\n".$this->styles();
+    }
+
+    /**
+     * Render preload/import map for dynamically loaded modules
+     */
+    protected function getPreloadImportMap(): string
+    {
+        $manifestInfo = $this->getManifestInfo();
+        $manifestPath = $manifestInfo['path'];
+        $isVite = $manifestInfo['isVite'];
+
+        if (! $manifestPath || ! file_exists($manifestPath)) {
+            return '';
+        }
+
+        $manifest = json_decode(file_get_contents($manifestPath), true);
+        if (! $manifest) {
+            return '';
+        }
+
+        $importMapEntries = [];
+
+        // Process all entries in the manifest
+        foreach ($manifest as $key => $entry) {
+            if (is_array($entry) && isset($entry['file'])) {
+                $path = $this->fixAssetPath($entry['file'], $isVite);
+                $importMapEntries['/build/assets/'.basename($entry['file'])] = $path;
+            }
+        }
+
+        if (empty($importMapEntries)) {
+            return '';
+        }
+
+        // Create import map script
+        return "<script type=\"importmap\">\n".
+               json_encode(['imports' => $importMapEntries], JSON_PRETTY_PRINT).
+               "\n</script>\n";
     }
 
     /**
