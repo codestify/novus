@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-    @if(app()->environment('local') && file_exists(base_path('packages/novus')))
+    @if (app()->environment('local') && file_exists(base_path('packages/novus')))
         @viteReactRefresh
         @vite(['resources/js/vendor/novus/app.tsx', 'resources/css/vendor/novus/app.css'])
     @else
@@ -49,7 +49,7 @@
 </head>
 
 <body class="font-sans antialiased">
-@inertia
+    @inertia
 </body>
 
 </html>

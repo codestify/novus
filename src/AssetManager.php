@@ -13,21 +13,40 @@ class AssetManager
     }
 
     /**
-     * Get asset URL with proper versioning
+     * Determine if we're using a Vite manifest and adjust paths accordingly
      */
-    public function asset(string $path): string
+    protected function getManifestInfo(): array
     {
-        $manifestPath = public_path('vendor/novus/manifest.json');
+        $paths = [
+            // Standard manifest location
+            public_path('vendor/novus/manifest.json') => false,
+            // Vite manifest location
+            public_path('vendor/novus/.vite/manifest.json') => true,
+        ];
 
-        if (file_exists($manifestPath)) {
-            $manifest = json_decode(file_get_contents($manifestPath), true);
-
-            if (isset($manifest[$path])) {
-                return asset('vendor/novus/'.$manifest[$path]);
+        foreach ($paths as $path => $isVite) {
+            if (file_exists($path)) {
+                return [
+                    'path' => $path,
+                    'isVite' => $isVite,
+                ];
             }
         }
 
-        return asset('vendor/novus/'.$path);
+        return ['path' => null, 'isVite' => false];
+    }
+
+    /**
+     * Fix asset path based on manifest type
+     */
+    protected function fixAssetPath(string $file, bool $isVite): string
+    {
+        if ($isVite) {
+            // Actual asset path is in /vendor/novus/assets, not /vendor/novus/.vite/assets/assets
+            return asset('vendor/novus/assets/'.basename($file));
+        }
+
+        return asset('vendor/novus/'.$file);
     }
 
     /**
@@ -35,21 +54,46 @@ class AssetManager
      */
     public function scripts(): string
     {
-        $manifestPath = public_path('vendor/novus/manifest.json');
+        $manifestInfo = $this->getManifestInfo();
+        $manifestPath = $manifestInfo['path'];
+        $isVite = $manifestInfo['isVite'];
 
-        if (file_exists($manifestPath)) {
+        if ($manifestPath && file_exists($manifestPath)) {
             $manifest = json_decode(file_get_contents($manifestPath), true);
 
-            if ($manifest && isset($manifest['resources/js/app.js'])) {
-                $file = $manifest['resources/js/app.js']['file'];
+            if ($manifest) {
+                // Check for entry point in different possible locations
+                $entryPoint = null;
+                foreach (['resources/js/app.js', 'resources/js/app.tsx', 'app.js', 'app.tsx'] as $possible) {
+                    if (isset($manifest[$possible])) {
+                        $entryPoint = $possible;
+                        break;
+                    }
+                }
 
-                return '<script type="module" src="'.asset('vendor/novus/'.$file).'"></script>';
+                if ($entryPoint) {
+                    $file = is_string($manifest[$entryPoint])
+                        ? $manifest[$entryPoint]
+                        : ($manifest[$entryPoint]['file'] ?? null);
+
+                    if ($file) {
+                        return '<script type="module" src="'.$this->fixAssetPath($file, $isVite).'"></script>';
+                    }
+                }
             }
         }
 
-        $jsFiles = glob(public_path('vendor/novus/*.js'));
-        if (count($jsFiles) > 0) {
+        // Fallback: search for JS files directly
+        $jsFiles = glob(public_path('vendor/novus/assets/*.js'));
+        if (empty($jsFiles)) {
+            $jsFiles = glob(public_path('vendor/novus/*.js'));
+        }
+
+        if (! empty($jsFiles)) {
             $jsFile = basename($jsFiles[0]);
+            if (strpos($jsFiles[0], '/assets/') !== false) {
+                return '<script type="module" src="'.asset('vendor/novus/assets/'.$jsFile).'"></script>';
+            }
 
             return '<script type="module" src="'.asset('vendor/novus/'.$jsFile).'"></script>';
         }
@@ -62,28 +106,68 @@ class AssetManager
      */
     public function styles(): string
     {
-        $manifestPath = public_path('vendor/novus/manifest.json');
+        $manifestInfo = $this->getManifestInfo();
+        $manifestPath = $manifestInfo['path'];
+        $isVite = $manifestInfo['isVite'];
 
-        if (file_exists($manifestPath)) {
+        if ($manifestPath && file_exists($manifestPath)) {
             $manifest = json_decode(file_get_contents($manifestPath), true);
 
-            if ($manifest && isset($manifest['resources/js/app.js'])) {
-                $cssFiles = $manifest['resources/js/app.js']['css'] ?? [];
-                $tags = [];
-
-                foreach ($cssFiles as $file) {
-                    $tags[] = '<link rel="stylesheet" href="'.asset('vendor/novus/'.$file).'">';
+            if ($manifest) {
+                // Check for entry point
+                $entryPoint = null;
+                foreach (['resources/js/app.js', 'resources/js/app.tsx', 'app.js', 'app.tsx'] as $possible) {
+                    if (isset($manifest[$possible])) {
+                        $entryPoint = $possible;
+                        break;
+                    }
                 }
 
-                return implode("\n", $tags);
+                if ($entryPoint) {
+                    // Get CSS files for this entry
+                    $cssFiles = [];
+
+                    if (isset($manifest[$entryPoint]['css'])) {
+                        $cssFiles = $manifest[$entryPoint]['css'];
+                    } elseif (isset($manifest[$entryPoint]['imports'])) {
+                        // Check imports for CSS
+                        foreach ($manifest[$entryPoint]['imports'] as $import) {
+                            if (isset($manifest[$import]['css'])) {
+                                $cssFiles = array_merge($cssFiles, $manifest[$import]['css']);
+                            }
+                        }
+                    }
+
+                    if (! empty($cssFiles)) {
+                        $tags = [];
+                        foreach ($cssFiles as $file) {
+                            $tags[] = '<link rel="stylesheet" href="'.$this->fixAssetPath($file, $isVite).'">';
+                        }
+
+                        return implode("\n", $tags);
+                    }
+                }
             }
         }
 
-        $cssFiles = glob(public_path('vendor/novus/*.css'));
-        if (count($cssFiles) > 0) {
-            $cssFile = basename($cssFiles[0]);
+        // Fallback: search for CSS files directly
+        $cssFiles = glob(public_path('vendor/novus/assets/*.css'));
+        if (empty($cssFiles)) {
+            $cssFiles = glob(public_path('vendor/novus/*.css'));
+        }
 
-            return '<link rel="stylesheet" href="'.asset('vendor/novus/'.$cssFile).'">';
+        if (! empty($cssFiles)) {
+            $tags = [];
+            foreach ($cssFiles as $file) {
+                $cssFile = basename($file);
+                if (strpos($file, '/assets/') !== false) {
+                    $tags[] = '<link rel="stylesheet" href="'.asset('vendor/novus/assets/'.$cssFile).'">';
+                } else {
+                    $tags[] = '<link rel="stylesheet" href="'.asset('vendor/novus/'.$cssFile).'">';
+                }
+            }
+
+            return implode("\n", $tags);
         }
 
         return '<!-- No CSS assets found -->';
