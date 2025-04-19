@@ -305,7 +305,7 @@ return [
         */
         'timeout' => env('NOVUS_AI_TIMEOUT', 30),
 
-        'mock_responses' => env('NOVUS_AI_MOCK_RESPONSES', app()->environment('local', 'testing')),
+        'mock_responses' => env('NOVUS_AI_MOCK_RESPONSES', false),
 
     ],
 ];

@@ -17,6 +17,8 @@ class Author extends Authenticatable
 
     protected $table = 'novus_authors';
 
+    protected $guarded = [];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -58,14 +60,14 @@ class Author extends Authenticatable
     protected function avatar(): Attribute
     {
         return Attribute::make(
-            get: fn (?string $value) => $value ?: 'https://secure.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?s=80'
+            get: fn(?string $value) => $value ?: 'https://secure.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?s=80'
         );
     }
 
     protected function initials(): Attribute
     {
         return Attribute::make(
-            get: fn () => collect(explode(' ', $this->name))->map(fn ($name) => Str::upper(Str::substr($name, 0, 1)))->implode('')
+            get: fn() => collect(explode(' ', $this->name))->map(fn($name) => Str::upper(Str::substr($name, 0, 1)))->implode('')
         );
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Process;
 
 class NovusProdCommand extends Command
 {
-    protected $signature = 'novus:install
+    protected $signature = 'novus:prod
                             {--force : Overwrite any existing assets or config}
                             {--no-build : Skip the frontend build process}
                             {--dev : Install in development mode}';
@@ -68,11 +68,11 @@ class NovusProdCommand extends Command
         $requirements = [
             'PHP >= 8.1' => version_compare(PHP_VERSION, '8.1.0', '>='),
             'Laravel >= 10.0' => class_exists(\Illuminate\Foundation\Application::class) &&
-                              version_compare(app()->version(), '10.0.0', '>='),
+                version_compare(app()->version(), '10.0.0', '>='),
             'Inertia' => class_exists(\Inertia\Inertia::class),
         ];
 
-        $missingRequirements = array_filter($requirements, fn ($met) => ! $met);
+        $missingRequirements = array_filter($requirements, fn($met) => ! $met);
 
         if (! empty($missingRequirements)) {
             $this->components->error('Missing requirements:');
@@ -88,7 +88,7 @@ class NovusProdCommand extends Command
             return false;
         }
 
-        $this->components->task('System requirements check', fn () => true);
+        $this->components->task('System requirements check', fn() => true);
 
         return true;
     }
@@ -245,7 +245,7 @@ class NovusProdCommand extends Command
         $packagePath = base_path('vendor/shah/novus');
 
         // Check if package.json exists
-        if (! file_exists($packagePath.'/package.json')) {
+        if (! file_exists($packagePath . '/package.json')) {
             $this->components->error('package.json not found in the Novus package directory.');
             $this->components->info('Falling back to pre-compiled assets.');
             $this->publishCompiledAssets();
