@@ -5,12 +5,10 @@ import tailwindcss from "@tailwindcss/vite";
 import { resolve } from "node:path";
 
 // Determine if we're running in the package directory or from a parent project
-const isPackage =
-    !__dirname.includes("vendor") && !__dirname.includes("node_modules");
+const isPackage = !__dirname.includes("vendor") && !__dirname.includes("node_modules");
 
 export default defineConfig({
     plugins: [
-        //@ts-ignore
         laravel({
             input: ["resources/css/app.css", "resources/js/app.tsx"],
             refresh: true,
@@ -23,13 +21,14 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            // The critical part: ensure @novus resolves to the correct path
             "@novus": resolve(__dirname, "resources/js"),
             "ziggy-js": resolve(__dirname, "../../vendor/tightenco/ziggy"),
         },
     },
+    base: '/vendor/novus/',
     build: {
         outDir: "public/build",
+        assetsDir: "assets",
         manifest: true,
         chunkSizeWarningLimit: 1000,
         rollupOptions: {
