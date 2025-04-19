@@ -184,8 +184,16 @@ class NovusProdCommand extends Command
                 }
             }
 
+            if (app()->environment('production')) {
+                $js_base_path = resource_path('js/vendor/novus');
+                $css_base_path = resource_path('css/vendor/novus');
+
+            } else {
+                $js_base_path = base_path('packages/novus');
+                $css_base_path = base_path('packages/novus/resources/css');
+            }
             File::link(
-                base_path('vendor/shah/novus/resources/js'),
+                base_path($js_base_path),
                 $jsVendorPath
             );
         }
@@ -200,7 +208,7 @@ class NovusProdCommand extends Command
             }
 
             File::link(
-                base_path('vendor/shah/novus/resources/css'),
+                base_path($css_base_path),
                 $cssVendorPath
             );
         }
@@ -242,7 +250,12 @@ class NovusProdCommand extends Command
 
         $this->components->info("Using Node.js version: $nodeVersion");
 
-        $packagePath = base_path('vendor/shah/novus');
+        if (app()->environment('production')) {
+            $packagePath = base_path('vendor/codemystify/novus');
+        } else {
+            $packagePath = base_path('packages/novus');
+        }
+
 
         // Check if package.json exists
         if (! file_exists($packagePath . '/package.json')) {

@@ -43,7 +43,7 @@
             $manifestPath = public_path('vendor/novus/manifest.json');
             $jsAsset = 'app.js';
             $cssAsset = 'app.css';
-            
+
             if (file_exists($manifestPath)) {
                 $manifest = json_decode(file_get_contents($manifestPath), true);
                 if ($manifest && isset($manifest['resources/js/app.tsx'])) {
@@ -53,7 +53,7 @@
                 }
             }
         @endphp
-        
+
         <script type="module" src="{{ asset('vendor/novus/' . $jsAsset) }}"></script>
         <link rel="stylesheet" href="{{ asset('vendor/novus/' . $cssAsset) }}">
     @else

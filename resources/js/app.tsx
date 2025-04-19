@@ -3,7 +3,7 @@ import "./bootstrap";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
-import { RouteContext } from "@novus/Hooks/useRoute";
+import { RouteContext } from "../js/Hooks/useRoute";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ThemeProvider } from "./providers/ThemeProvider";
 
@@ -19,7 +19,7 @@ createInertiaApp({
         resolvePageComponent(
             `./Pages/${name}.tsx`,
             //@ts-ignore
-            import.meta.glob("./Pages/**/*.tsx"),
+            import.meta.glob("./Pages/**/*.tsx")
         ),
     setup({ el, App, props }) {
         const root = createRoot(el);
@@ -28,7 +28,7 @@ createInertiaApp({
                 <RouteContext.Provider value={(window as any).route}>
                     <App {...props} />
                 </RouteContext.Provider>
-            </ThemeProvider>,
+            </ThemeProvider>
         );
     },
 });
