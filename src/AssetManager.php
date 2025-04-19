@@ -2,10 +2,16 @@
 
 namespace Shah\Novus;
 
-use Illuminate\Support\Facades\File;
-
 class AssetManager
 {
+    /**
+     * Render all required asset tags
+     */
+    public function renderAssetTags(): string
+    {
+        return $this->scripts()."\n".$this->styles();
+    }
+
     /**
      * Get asset URL with proper versioning
      */
@@ -17,11 +23,11 @@ class AssetManager
             $manifest = json_decode(file_get_contents($manifestPath), true);
 
             if (isset($manifest[$path])) {
-                return asset('vendor/novus/' . $manifest[$path]);
+                return asset('vendor/novus/'.$manifest[$path]);
             }
         }
 
-        return asset('vendor/novus/' . $path);
+        return asset('vendor/novus/'.$path);
     }
 
     /**
@@ -36,14 +42,16 @@ class AssetManager
 
             if ($manifest && isset($manifest['resources/js/app.js'])) {
                 $file = $manifest['resources/js/app.js']['file'];
-                return '<script type="module" src="' . asset('vendor/novus/' . $file) . '"></script>';
+
+                return '<script type="module" src="'.asset('vendor/novus/'.$file).'"></script>';
             }
         }
 
         $jsFiles = glob(public_path('vendor/novus/*.js'));
         if (count($jsFiles) > 0) {
             $jsFile = basename($jsFiles[0]);
-            return '<script type="module" src="' . asset('vendor/novus/' . $jsFile) . '"></script>';
+
+            return '<script type="module" src="'.asset('vendor/novus/'.$jsFile).'"></script>';
         }
 
         return '<!-- No JS assets found -->';
@@ -64,7 +72,7 @@ class AssetManager
                 $tags = [];
 
                 foreach ($cssFiles as $file) {
-                    $tags[] = '<link rel="stylesheet" href="' . asset('vendor/novus/' . $file) . '">';
+                    $tags[] = '<link rel="stylesheet" href="'.asset('vendor/novus/'.$file).'">';
                 }
 
                 return implode("\n", $tags);
@@ -74,7 +82,8 @@ class AssetManager
         $cssFiles = glob(public_path('vendor/novus/*.css'));
         if (count($cssFiles) > 0) {
             $cssFile = basename($cssFiles[0]);
-            return '<link rel="stylesheet" href="' . asset('vendor/novus/' . $cssFile) . '">';
+
+            return '<link rel="stylesheet" href="'.asset('vendor/novus/'.$cssFile).'">';
         }
 
         return '<!-- No CSS assets found -->';

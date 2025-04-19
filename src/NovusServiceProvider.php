@@ -75,7 +75,7 @@ class NovusServiceProvider extends PackageServiceProvider
      */
     private function registerAssetManager(): void
     {
-        $this->app->singleton('novus.assets', fn() => new AssetManager);
+        $this->app->singleton('novus.assets', fn () => new AssetManager);
 
         $this->app['blade.compiler']->directive('novusAssets', function () {
             return '<?php echo app(\'novus.assets\')->renderAssetTags(); ?>';
@@ -104,12 +104,12 @@ class NovusServiceProvider extends PackageServiceProvider
         $middleware = array_merge($baseMiddleware, is_array($userMiddleware) ? $userMiddleware : [$userMiddleware]);
 
         Route::middleware($middleware)
-             ->as('novus.')
-             ->domain(config('novus.domain'))
-             ->prefix(config('novus.path', 'novus'))
-             ->group(function () {
-                 require __DIR__.'/../routes/web.php';
-             });
+            ->as('novus.')
+            ->domain(config('novus.domain'))
+            ->prefix(config('novus.path', 'novus'))
+            ->group(function () {
+                require __DIR__.'/../routes/web.php';
+            });
 
         Inertia::setRootView('novus::app');
 
@@ -185,8 +185,6 @@ class NovusServiceProvider extends PackageServiceProvider
 
     /**
      * Create development symlinks for resources.
-     *
-     * @return void
      */
     private function createDevelopmentSymlinks(): void
     {
