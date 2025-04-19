@@ -37,29 +37,11 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-    {{-- Handle assets differently in production vs development --}}
-    @if(app()->environment('production'))
-        @php
-            $manifestPath = public_path('vendor/novus/manifest.json');
-            $jsAsset = 'app.js';
-            $cssAsset = 'app.css';
-
-            if (file_exists($manifestPath)) {
-                $manifest = json_decode(file_get_contents($manifestPath), true);
-                if ($manifest && isset($manifest['resources/js/app.tsx'])) {
-                    $jsAsset = $manifest['resources/js/app.tsx']['file'] ?? $jsAsset;
-                    $cssAssets = $manifest['resources/js/app.tsx']['css'] ?? [];
-                    $cssAsset = $cssAssets[0] ?? $cssAsset;
-                }
-            }
-        @endphp
-
-        <script type="module" src="{{ asset('vendor/novus/' . $jsAsset) }}"></script>
-        <link rel="stylesheet" href="{{ asset('vendor/novus/' . $cssAsset) }}">
-    @else
-        {{-- Development mode - use Vite dev server --}}
+    @if(app()->environment('local') && file_exists(base_path('packages/novus')))
         @viteReactRefresh
         @vite(['resources/js/vendor/novus/app.tsx', 'resources/css/vendor/novus/app.css'])
+    @else
+        @novusAssets
     @endif
 
     @inertiaHead
@@ -67,7 +49,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    @inertia
+@inertia
 </body>
 
 </html>

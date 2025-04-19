@@ -3,9 +3,11 @@
 namespace Shah\Novus\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
+use Inertia\Inertia;
 
 class NovusProdCommand extends Command
 {
@@ -16,81 +18,53 @@ class NovusProdCommand extends Command
 
     protected $description = 'Install and set up Novus CMS';
 
+    /**
+     * The path to the package
+     */
+    protected string $packagePath;
+
     public function handle(): int
     {
         $this->info('Installing Novus CMS...');
         $this->newLine();
 
-        // Check requirements first
-        if (! $this->checkRequirements()) {
-            return self::FAILURE;
-        }
+        $this->determinePackagePath();
 
-        $this->components->info('Publishing required files...');
-
-        // Publish configuration files
         $this->publishConfiguration();
 
-        // Publish migrations
         $this->publishMigrations();
 
-        // Run migrations
         $this->runMigrations();
 
-        // Set up frontend assets
         $this->setupFrontendAssets();
 
-        // Publish or build assets based on options
         if ($this->option('no-build')) {
             $this->publishCompiledAssets();
         } else {
             $this->buildFrontendAssets();
         }
 
-        // Add dev features if requested
         if ($this->option('dev')) {
             $this->setupDevEnvironment();
         }
 
-        // Final steps
         $this->displayFinalInstructions();
 
         return self::SUCCESS;
     }
 
     /**
-     * Check if the system meets all requirements for Novus
+     * Determine the package path
      */
-    protected function checkRequirements(): bool
+    protected function determinePackagePath(): void
     {
-        $this->components->info('Checking system requirements...');
-
-        $requirements = [
-            'PHP >= 8.1' => version_compare(PHP_VERSION, '8.1.0', '>='),
-            'Laravel >= 10.0' => class_exists(\Illuminate\Foundation\Application::class) &&
-                version_compare(app()->version(), '10.0.0', '>='),
-            'Inertia' => class_exists(\Inertia\Inertia::class),
-        ];
-
-        $missingRequirements = array_filter($requirements, fn($met) => ! $met);
-
-        if (! empty($missingRequirements)) {
-            $this->components->error('Missing requirements:');
-            foreach (array_keys($missingRequirements) as $requirement) {
-                $this->components->error("- {$requirement}");
-            }
-
-            if (array_key_exists('Inertia', $missingRequirements)) {
-                $this->components->info('Please install Inertia.js first:');
-                $this->info('composer require inertiajs/inertia-laravel');
-            }
-
-            return false;
+        if (app()->environment('local') && File::exists(base_path('packages/novus'))) {
+            $this->packagePath = base_path('packages/novus');
+        } else {
+            $this->packagePath = base_path('vendor/codemystify/novus');
         }
 
-        $this->components->task('System requirements check', fn() => true);
-
-        return true;
+        $this->info("Using package path: {$this->packagePath}");
     }
 
     /**
@@ -108,12 +82,9 @@ class NovusProdCommand extends Command
             '--tag' => 'novus-config',
         ]));
 
-        $this->components->task('Publishing configuration', function () {
-            return true;
-        });
+        $this->components->task('Publishing configuration', fn() => true);
 
-        // Create storage directories if they don't exist
-        if (! File::exists(storage_path('app/novus'))) {
+        if (!File::exists(storage_path('app/novus'))) {
             File::makeDirectory(storage_path('app/novus'), 0755, true);
         }
     }
@@ -133,9 +104,7 @@ class NovusProdCommand extends Command
             '--tag' => 'novus-migrations',
         ]));
 
-        $this->components->task('Publishing migrations', function () {
-            return true;
-        });
+        $this->components->task('Publishing migrations', fn() => true);
     }
 
     /**
@@ -145,9 +114,7 @@ class NovusProdCommand extends Command
     {
         if ($this->confirm('Would you like to run migrations now?', true)) {
             $this->components->task('Running migrations', function () {
-                $migrated = Artisan::call('migrate');
-
-                return $migrated === 0;
+                return Artisan::call('migrate') === 0;
             });
         }
     }
@@ -157,65 +124,47 @@ class NovusProdCommand extends Command
      */
     protected function setupFrontendAssets(): void
     {
-        // Create necessary directories
+        $this->components->info('Setting up frontend assets...');
+
         $jsVendorPath = resource_path('js/vendor/novus');
         $cssVendorPath = resource_path('css/vendor/novus');
 
-        // Ensure parent directories exist
-        if (! is_dir(dirname($jsVendorPath))) {
-            File::makeDirectory(dirname($jsVendorPath), 0755, true);
+        $jsSourcePath = $this->packagePath . '/resources/js';
+        $cssSourcePath = $this->packagePath . '/resources/css';
+
+        File::ensureDirectoryExists(dirname($jsVendorPath));
+        File::ensureDirectoryExists(dirname($cssVendorPath));
+
+        $this->cleanExistingPath($jsVendorPath);
+        $this->cleanExistingPath($cssVendorPath);
+
+        if (File::exists($jsSourcePath)) {
+            File::link($jsSourcePath, $jsVendorPath);
+            $this->components->info("Created JS symlink: {$jsSourcePath} -> {$jsVendorPath}");
+        } else {
+            $this->components->warn("JS source path not found: {$jsSourcePath}");
         }
 
-        if (! is_dir(dirname($cssVendorPath))) {
-            File::makeDirectory(dirname($cssVendorPath), 0755, true);
+        if (File::exists($cssSourcePath)) {
+            File::link($cssSourcePath, $cssVendorPath);
+            $this->components->info("Created CSS symlink: {$cssSourcePath} -> {$cssVendorPath}");
+        } else {
+            $this->components->warn("CSS source path not found: {$cssSourcePath}");
         }
 
-        // Check if links already exist
-        $jsExists = is_dir($jsVendorPath) || is_link($jsVendorPath);
-        $cssExists = is_dir($cssVendorPath) || is_link($cssVendorPath);
+        $this->components->task('Frontend assets setup', fn() => true);
+    }
 
-        // Create links if they don't exist
-        if (! $jsExists || $this->option('force')) {
-            if ($jsExists) {
-                if (is_link($jsVendorPath)) {
-                    File::delete($jsVendorPath);
-                } else {
-                    File::deleteDirectory($jsVendorPath);
-                }
-            }
-
-            if (app()->environment('production')) {
-                $js_base_path = resource_path('js/vendor/novus');
-                $css_base_path = resource_path('css/vendor/novus');
-
-            } else {
-                $js_base_path = base_path('packages/novus');
-                $css_base_path = base_path('packages/novus/resources/css');
-            }
-            File::link(
-                base_path($js_base_path),
-                $jsVendorPath
-            );
+    /**
+     * Clean existing path (symlink or directory)
+     */
+    protected function cleanExistingPath(string $path): void
+    {
+        if (is_link($path)) {
+            File::delete($path);
+        } elseif (is_dir($path)) {
+            File::deleteDirectory($path);
         }
-
-        if (! $cssExists || $this->option('force')) {
-            if ($cssExists) {
-                if (is_link($cssVendorPath)) {
-                    File::delete($cssVendorPath);
-                } else {
-                    File::deleteDirectory($cssVendorPath);
-                }
-            }
-
-            File::link(
-                base_path($css_base_path),
-                $cssVendorPath
-            );
-        }
-
-        $this->components->task('Setting up frontend assets', function () {
-            return true;
-        });
     }
 
     /**
@@ -225,75 +174,55 @@ class NovusProdCommand extends Command
     {
         $this->components->info('Building Novus frontend assets...');
 
-        // Check if Node.js is installed with improved error handling
         try {
             $process = Process::run('node -v');
-            $nodeInstalled = $process->successful();
+            if (!$process->successful()) {
+                throw new \RuntimeException("Node.js not found");
+            }
             $nodeVersion = trim($process->output());
+            $this->components->info("Using Node.js version: {$nodeVersion}");
         } catch (\Exception $e) {
-            $nodeInstalled = false;
-            $nodeVersion = null;
-        }
-
-        if (! $nodeInstalled) {
-            $this->components->error('Node.js is required to build the Novus frontend assets.');
-            $this->components->warn('Please install Node.js and run this command again, or use the --no-build option.');
+            $this->components->error('Node.js is required to build the frontend assets.');
 
             if ($this->confirm('Would you like to continue with pre-compiled assets instead?', true)) {
                 $this->publishCompiledAssets();
-
                 return;
             }
 
             throw new \RuntimeException('Node.js is required and not installed.');
         }
 
-        $this->components->info("Using Node.js version: $nodeVersion");
-
-        if (app()->environment('production')) {
-            $packagePath = base_path('vendor/codemystify/novus');
-        } else {
-            $packagePath = base_path('packages/novus');
-        }
-
-
-        // Check if package.json exists
-        if (! file_exists($packagePath . '/package.json')) {
+        if (!File::exists($this->packagePath . '/package.json')) {
             $this->components->error('package.json not found in the Novus package directory.');
             $this->components->info('Falling back to pre-compiled assets.');
             $this->publishCompiledAssets();
-
             return;
         }
 
-        // Install npm dependencies and build assets
-        $this->components->task('Installing NPM dependencies', function () use ($packagePath) {
-            $process = Process::path($packagePath)->run('npm install');
+        $this->components->task('Installing NPM dependencies', function () {
+            $process = Process::path($this->packagePath)->run('npm install');
 
-            if (! $process->successful()) {
+            if (!$process->successful()) {
                 $this->components->error('Failed to install NPM dependencies:');
                 $this->components->error($process->errorOutput());
-
                 return false;
             }
 
             return true;
         });
 
-        $this->components->task('Building frontend assets', function () use ($packagePath) {
-            $process = Process::path($packagePath)->run('npm run build');
+        $this->components->task('Building frontend assets', function () {
+            $process = Process::path($this->packagePath)->run('npm run build');
 
-            if (! $process->successful()) {
+            if (!$process->successful()) {
                 $this->components->error('Failed to build frontend assets:');
                 $this->components->error($process->errorOutput());
-
                 return false;
             }
 
             return true;
         });
 
-        // Publish the built assets
         $this->publishCompiledAssets();
     }
 
@@ -312,14 +241,37 @@ class NovusProdCommand extends Command
             '--tag' => 'novus-assets',
         ]));
 
-        $this->components->task('Publishing compiled assets', function () {
-            return true;
-        });
+        $this->components->task('Publishing compiled assets', fn() => true);
 
-        // Ensure the assets directory exists in public
-        if (! File::exists(public_path('vendor/novus'))) {
-            $this->components->warn('Asset directory not found. You may need to run `npm run build` in the package directory.');
+        $assetPath = public_path('vendor/novus');
+
+        if (!File::exists($assetPath)) {
+            $this->components->warn('Asset directory not found in public path.');
+            $this->publishAssetsManuallySuggestion($assetPath);
+            return;
         }
+
+        $jsFiles = File::glob($assetPath . '/*.js');
+        $cssFiles = File::glob($assetPath . '/*.css');
+
+        if (empty($jsFiles) && empty($cssFiles)) {
+            $this->components->warn('No assets found in the published directory.');
+            $this->publishAssetsManuallySuggestion($assetPath);
+            return;
+        }
+
+        $this->components->info("Assets published successfully to: {$assetPath}");
+        $this->components->info("Found " . count($jsFiles) . " JS files and " . count($cssFiles) . " CSS files.");
+    }
+
+    /**
+     * Display suggestion for manual asset publishing
+     */
+    protected function publishAssetsManuallySuggestion(string $assetPath): void
+    {
+        $this->components->info('Manual steps to fix:');
+        $this->info('  1. Run: php artisan vendor:publish --tag=novus-assets --force');
+        $this->info('  2. Verify that assets exist in: ' . $assetPath);
     }
 
     /**
@@ -328,8 +280,6 @@ class NovusProdCommand extends Command
     protected function setupDevEnvironment(): void
     {
         $this->components->info('Setting up development environment...');
-
-        // Call the dev setup command
         $this->call('novus:dev');
     }
 
@@ -354,11 +304,6 @@ class NovusProdCommand extends Command
         $this->info('Your configuration file is located at:');
         $this->comment('config/novus.php');
 
-        $this->newLine();
-        $this->info('For more information, visit:');
-        $this->comment('https://github.com/shah/novus');
-
-        // Add a notice about dev mode if applicable
         if ($this->option('dev')) {
             $this->newLine();
             $this->components->info('Development mode is enabled. Assets are symlinked for hot reloading.');
