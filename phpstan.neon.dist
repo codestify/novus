@@ -1,0 +1,18 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - config
+        - database
+        - tests
+    tmpDir: build/phpstan
+    checkOctaneCompatibility: true
+    checkModelProperties: true
+    ignoreErrors:
+        - '#Undefined type Prism\\Facades\\Prism#'
+        - '#Undefined type Prism\\Exceptions\\PrismException#'
+        - '#Call to method getMessage\(\) on an unknown class Prism\\Exceptions\\PrismException#'
+        - '#Caught class Prism\\Exceptions\\PrismException not found#'
