@@ -75,14 +75,7 @@ class NovusServiceProvider extends PackageServiceProvider
      */
     private function registerAssetManager(): void
     {
-        // Define asset paths
-        $assetSrcPath = __DIR__.'/../public/build';
-        $manifestPath = $assetSrcPath.'/manifest.json';
-        $assetDestPath = public_path('vendor/novus');
-
-        $this->app->singleton('novus.assets', function ($app) {
-            return new AssetManager();
-        });
+        $this->app->singleton('novus.assets', fn() => new AssetManager);
 
         $this->app['blade.compiler']->directive('novusAssets', function () {
             return '<?php echo app(\'novus.assets\')->renderAssetTags(); ?>';
@@ -118,10 +111,8 @@ class NovusServiceProvider extends PackageServiceProvider
                  require __DIR__.'/../routes/web.php';
              });
 
-        // Set Inertia root view
         Inertia::setRootView('novus::app');
 
-        // Define asset paths for publishing
         $assetSrcPath = __DIR__.'/../public/build';
         $assetDestPath = public_path('vendor/novus');
 
