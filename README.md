@@ -18,7 +18,7 @@ Novus is a modern content management system (CMS) built specifically for Laravel
 
 ```bash
 # Require the package
-composer require shah/novus
+composer require codemystify/novus
 
 # Run the installation command
 php artisan novus:prod
