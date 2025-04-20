@@ -34,9 +34,9 @@ After installation, access your CMS at: `https://your-site.com/novus`
 
 ## Requirements
 
-- PHP 8.1+
-- Laravel 10+
-- MySQL 5.7+ or PostgreSQL 10+
+- PHP 8.2+
+- Laravel 11+
+- MySQL 8 or PostgreSQL 10+
 - Node.js & NPM (for development)
 
 ## Documentation
