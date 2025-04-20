@@ -1,0 +1,85 @@
+{
+    "name": "codemystify/novus",
+    "description": "This is my package novus",
+    "keywords": [
+        "Muhammad Ali Shah",
+        "laravel",
+        "novus"
+    ],
+    "homepage": "https://github.com/codemystify/novus",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Muhammad Ali Shah",
+            "email": "muhammad.shah@hotmail.co.uk",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "google/analytics-data": "^0.22.2",
+        "illuminate/contracts": "^10.0||^11.0||^12.0",
+        "inertiajs/inertia-laravel": "^1.0",
+        "intervention/image": "^3.11",
+        "intervention/image-laravel": "^1.5",
+        "laravel/prompts": "^0.3.5",
+        "prism-php/prism": "^0.61.0",
+        "spatie/laravel-medialibrary": "^11.12",
+        "spatie/laravel-package-tools": "^1.16",
+        "tightenco/ziggy": "^2.0",
+        "ext-libxml": "*",
+        "ext-dom": "*"
+    },
+    "require-dev": {
+        "larastan/larastan": "^2.9||^3.0",
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.1.1||^7.10.0",
+        "orchestra/testbench": "^10.0.0||^9.0.0||^8.22.0",
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-arch": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "phpstan/extension-installer": "^1.3||^2.0",
+        "phpstan/phpstan-deprecation-rules": "^1.1||^2.0",
+        "phpstan/phpstan-phpunit": "^1.3||^2.0",
+        "spatie/laravel-ray": "^1.35"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shah\\Novus\\": "src/",
+            "Shah\\Novus\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Shah\\Novus\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Shah\\Novus\\NovusServiceProvider"
+            ],
+            "aliases": {
+                "Novus": "Shah\\Novus\\Facades\\Novus"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
