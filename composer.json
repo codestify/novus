@@ -19,7 +19,7 @@
         "php": "^8.2",
         "google/analytics-data": "^0.22.2",
         "illuminate/contracts": "^10.0||^11.0||^12.0",
-        "inertiajs/inertia-laravel": "^1.0",
+        "inertiajs/inertia-laravel": "^2.0",
         "intervention/image": "^3.11",
         "intervention/image-laravel": "^1.5",
         "laravel/prompts": "^0.3.5",
