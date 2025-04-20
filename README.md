@@ -12,7 +12,6 @@ Novus is a modern content management system (CMS) built specifically for Laravel
 - **SEO Tools** - Built-in tools for optimizing content visibility
 - **Google Analytics Integration** - Track traffic and user behavior
 - **AI-Powered Assistance** - Optional content enhancement tools
-- **API-First Design** - Easy access to your content via API
 
 ## Quick Install
 
