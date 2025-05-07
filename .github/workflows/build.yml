@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
+      - name: Setup CI environment
+        run: ./.github/workflows/setup-ci.sh
+        
       - name: Build assets
         run: npm run build
         
