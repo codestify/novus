@@ -38,7 +38,7 @@ import {
     AlertDescription,
     AlertTitle,
 } from "@novus/Components/ui/alert";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 
 import BasicSeoTab from "@novus/Components/PostSeo/Tabs/BasicSeoTab";
 import OpenGraphTab from "@novus/Components/PostSeo/Tabs/OpenGraphTab";

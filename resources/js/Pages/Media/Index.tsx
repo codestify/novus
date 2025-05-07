@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Head, useForm, router } from "@inertiajs/react";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 import AuthLayout from "@novus/Layouts/AuthLayout";
 import { MediaLibraryProps, MediaItem } from "@novus/types/media";
-import { useToast } from "@novus/Hooks/use-toast";
+import { useToast } from "@novus/hooks/use-toast";
 import { ToastAction } from "@novus/Components/ui/toast";
 import { RefreshCw, Trash2, Upload } from "lucide-react";
 import { PageHeader } from "@novus/Components/Media/PageHeader";

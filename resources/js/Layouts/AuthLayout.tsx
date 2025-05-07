@@ -4,7 +4,7 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import Sidebar from "@novus/Partials/Sidebar";
 import TopBar from "@novus/Partials/TopBar";
 import { Toaster } from "@novus/Components/ui/toaster";
-import useTypedPage from "@novus/Hooks/useTypePage";
+import useTypedPage from "@novus/hooks/useTypePage";
 
 interface AuthLayoutProps {
     children: React.ReactNode;

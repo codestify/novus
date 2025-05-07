@@ -29,8 +29,8 @@ import {
 import { Checkbox } from "@novus/Components/ui/checkbox";
 import { format } from "date-fns";
 
-import useRoute from "@novus/Hooks/useRoute";
-import { useToast } from "@novus/Hooks/use-toast";
+import useRoute from "@novus/hooks/useRoute";
+import { useToast } from "@novus/hooks/use-toast";
 import { EmptyState } from "@novus/Components/EmptyState";
 import { PaginationWrapper } from "@novus/Components/PaginationWrapper";
 import SubscriberFilters from "@novus/Components/Subscribers/SubscriberFilters";

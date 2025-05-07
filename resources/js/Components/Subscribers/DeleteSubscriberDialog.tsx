@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "@inertiajs/react";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 import {
     AlertDialog,
     AlertDialogAction,

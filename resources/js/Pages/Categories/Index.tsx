@@ -50,7 +50,7 @@ import {
 import { Badge } from "@novus/Components/ui/badge";
 import { PaginationWrapper } from "@novus/Components/PaginationWrapper";
 import { EmptyState } from "@novus/Components/EmptyState";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 
 type Category = {
     id: number;

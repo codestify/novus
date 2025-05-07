@@ -50,7 +50,7 @@ import {
 } from "@novus/Components/ui/tooltip";
 import { Alert, AlertDescription } from "@novus/Components/ui/alert";
 import { cn } from "@novus/lib/utils";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 
 type ParentCategory = {
     id: number;

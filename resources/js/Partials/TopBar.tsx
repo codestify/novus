@@ -28,7 +28,7 @@ import { Button } from "@novus/Components/ui/button";
 import { Input } from "@novus/Components/ui/input";
 import { Badge } from "@novus/Components/ui/badge";
 import { useTheme } from "../providers/ThemeProvider";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 import { Author } from "@novus/types";
 import Logo from "@novus/Components/Logo";
 

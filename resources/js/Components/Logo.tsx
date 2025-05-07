@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@novus/lib/utils";
-import useTypedPage from "@novus/Hooks/useTypePage";
+import useTypedPage from "@novus/hooks/useTypePage";
 
 interface LogoProps {
     className?: string;

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm } from "@inertiajs/react";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 import { Button } from "@novus/Components/ui/button";
 import { Input } from "@novus/Components/ui/input";
 import { Label } from "@novus/Components/ui/label";

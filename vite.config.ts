@@ -4,9 +4,8 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { resolve } from "node:path";
 
-// Environment detection
+// Determine if we're running in the package directory or from a parent project
 const isPackage = !__dirname.includes("vendor") && !__dirname.includes("node_modules");
-const isCI = process.env.CI === 'true';
 
 export default defineConfig({
     plugins: [
@@ -23,11 +22,9 @@ export default defineConfig({
     resolve: {
         alias: {
             "@novus": resolve(__dirname, "resources/js"),
-            "ziggy-js": isCI
-                ? resolve(__dirname, "resources/js/__mocks__/ziggy-js.ts") // Use mock in CI environment
-                : isPackage 
-                    ? resolve(__dirname, "../../vendor/tightenco/ziggy") 
-                    : resolve(__dirname, "../../../tightenco/ziggy"),
+            "ziggy-js": isPackage 
+                ? resolve(__dirname, "../../vendor/tightenco/ziggy") 
+                : resolve(__dirname, "../../../tightenco/ziggy"),
         },
     },
     base: '/vendor/novus/',

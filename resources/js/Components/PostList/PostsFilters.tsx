@@ -11,7 +11,7 @@ import {
 } from "@novus/Components/ui/select";
 import { Badge } from "@novus/Components/ui/badge";
 import { PostListItem } from "@novus/types/post";
-import useTypedPage from "@novus/Hooks/useTypePage";
+import useTypedPage from "@novus/hooks/useTypePage";
 
 interface PostsFiltersProps {
     viewMode: "list" | "grid";

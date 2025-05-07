@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@novus/Components/ui/input";
 import { Button } from "@novus/Components/ui/button";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 import { useForm } from "@inertiajs/react";
 import Logo from "@novus/Components/Logo";
 

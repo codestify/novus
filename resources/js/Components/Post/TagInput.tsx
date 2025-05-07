@@ -17,7 +17,7 @@ import {
 import { Check, ChevronsUpDown, Hash, PlusCircle, X } from "lucide-react";
 import { cn } from "@novus/lib/utils";
 import { Badge } from "@novus/Components/ui/badge";
-import useTypedPage from "@novus/Hooks/useTypePage";
+import useTypedPage from "@novus/hooks/useTypePage";
 
 export type Tag = {
     id: number;

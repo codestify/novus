@@ -15,7 +15,7 @@ import {
     Users,
 } from "lucide-react";
 import { Badge } from "@novus/Components/ui/badge";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 
 type GrowthTrend = {
     current: number;

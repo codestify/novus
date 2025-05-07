@@ -2,7 +2,7 @@ import React from "react";
 import { Image, Upload } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@novus/Components/ui/card";
 import { Button } from "@novus/Components/ui/button";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 import { router } from "@inertiajs/react";
 import { MediaItem, PaginationData } from "@novus/types/media";
 import { GridView } from "./GridView";

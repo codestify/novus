@@ -7,7 +7,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@novus/Components/ui/tooltip";
-import { useDistractionFreeMode } from "@novus/Hooks/useDistractionFreeMode";
+import { useDistractionFreeMode } from "@novus/hooks/useDistractionFreeMode";
 
 interface DistractionFreeToggleProps {
     onToggle?: (isDistracted: boolean) => void;

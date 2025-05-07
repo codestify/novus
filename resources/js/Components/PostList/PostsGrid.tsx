@@ -10,7 +10,7 @@ import {
 } from "@novus/Components/ui/avatar";
 import { Button } from "@novus/Components/ui/button";
 import PostStatusBadge from "./PostStatusBadge";
-import useRoute from "@novus/Hooks/useRoute";
+import useRoute from "@novus/hooks/useRoute";
 
 interface PostsGridProps {
     posts: PostListItem[];

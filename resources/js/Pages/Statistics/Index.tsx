@@ -16,8 +16,8 @@ import VisitorChart from "@novus/Components/Analytics/VisitorChart";
 import BrowserChart from "@novus/Components/Analytics/BrowserChart";
 import ReferrersTable from "@novus/Components/Analytics/ReferrersTable";
 import PagesTable from "@novus/Components/Analytics/PagesTable";
-import useTypedPage from "@novus/Hooks/useTypePage";
-import useRoute from "@novus/Hooks/useRoute";
+import useTypedPage from "@novus/hooks/useTypePage";
+import useRoute from "@novus/hooks/useRoute";
 import { formatDateWithDay } from "@novus/utils";
 
 const Statistics = () => {

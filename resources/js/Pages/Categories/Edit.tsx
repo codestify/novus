@@ -46,8 +46,8 @@ import {
     AlertDialogTitle,
 } from "@novus/Components/ui/alert-dialog";
 import { cn } from "@novus/lib/utils";
-import useRoute from "@novus/Hooks/useRoute";
-import useTypedPage from "@novus/Hooks/useTypePage";
+import useRoute from "@novus/hooks/useRoute";
+import useTypedPage from "@novus/hooks/useTypePage";
 
 export default function Edit() {
     const [autoSlug, setAutoSlug] = useState(false);

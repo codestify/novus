@@ -24,7 +24,7 @@ jobs:
         run: npm ci
         
       - name: Build assets
-        run: CI=true npm run build
+        run: npm run build
         
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

@@ -40,7 +40,7 @@ import {
 import AuthLayout from "@novus/Layouts/AuthLayout";
 import BounceRateChart from "@novus/Components/Analytics/BounceRateChart";
 import KeywordsTable from "@novus/Components/Analytics/KeywordsTable";
-import useTypedPage from "@novus/Hooks/useTypePage";
+import useTypedPage from "@novus/hooks/useTypePage";
 import {
     Tabs,
     TabsContent,

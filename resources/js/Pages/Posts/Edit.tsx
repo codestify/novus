@@ -3,8 +3,8 @@ import { Head, useForm } from "@inertiajs/react";
 import AuthLayout from "@novus/Layouts/AuthLayout";
 import PostEditor from "@novus/Components/Post/PostEditor";
 import PostExcerpt from "@novus/Components/Post/PostExcerpt";
-import useRoute from "@novus/Hooks/useRoute";
-import useTypedPage from "@novus/Hooks/useTypePage";
+import useRoute from "@novus/hooks/useRoute";
+import useTypedPage from "@novus/hooks/useTypePage";
 import { PostFormData } from "@novus/types/post";
 import {
     AlertDialog,
@@ -22,8 +22,8 @@ import PostVisibility from "@novus/Components/Post/PostVisibility";
 import { processFeaturedImageForSubmission } from "@novus/lib/mediaUtils";
 import { getPostEditorClasses } from "@novus/lib/postLayoutUtils";
 import { getInitialPostFormData } from "@novus/lib/postFormUtils";
-import { useDistractionFreeMode } from "@novus/Hooks/useDistractionFreeMode";
-import { useSaveStatus } from "@novus/Hooks/useSaveStatus";
+import { useDistractionFreeMode } from "@novus/hooks/useDistractionFreeMode";
+import { useSaveStatus } from "@novus/hooks/useSaveStatus";
 import EnhancedPostSeo from "@novus/Components/PostSeo/EnhancedPostSeo";
 
 export default function Edit() {
