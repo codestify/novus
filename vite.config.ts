@@ -24,7 +24,7 @@ export default defineConfig({
         alias: {
             "@novus": resolve(__dirname, "resources/js"),
             "ziggy-js": isCI
-                ? false // Skip Ziggy in CI environment to prevent build errors
+                ? resolve(__dirname, "resources/js/__mocks__/ziggy-js.ts") // Use mock in CI environment
                 : isPackage 
                     ? resolve(__dirname, "../../vendor/tightenco/ziggy") 
                     : resolve(__dirname, "../../../tightenco/ziggy"),
