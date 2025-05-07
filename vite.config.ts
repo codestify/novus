@@ -22,8 +22,8 @@ export default defineConfig({
     resolve: {
         alias: {
             "@novus": resolve(__dirname, "resources/js"),
-            "ziggy-js": isPackage 
-                ? resolve(__dirname, "../../vendor/tightenco/ziggy") 
+            "ziggy-js": isPackage
+                ? resolve(__dirname, "../../vendor/tightenco/ziggy")
                 : resolve(__dirname, "../../../tightenco/ziggy"),
         },
     },
