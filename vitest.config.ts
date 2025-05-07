@@ -9,6 +9,9 @@ export default defineConfig({
         globals: true,
         environment: "jsdom",
         setupFiles: ["./vitest.setup.ts"],
+        moduleNameMapper: {
+            "^ziggy-js$": "<rootDir>/resources/js/__mocks__/ziggy-js.ts",
+        },
     },
     resolve: {
         alias: {
