@@ -27,8 +27,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
+      - name: Setup CI environment
+        run: |
+          chmod +x ./.github/workflows/setup-ci.sh
+          ./.github/workflows/setup-ci.sh
+        
       - name: Run tests
-        run: npm test -- --run
+        run: CI=true npm test -- --run
         
       - name: Upload test artifacts
         uses: actions/upload-artifact@v4
@@ -38,3 +43,10 @@ jobs:
           path: |
             .vitest/
             coverage/
+            
+      - name: Show test summary
+        run: |
+          echo "## JavaScript Tests Completed :white_check_mark:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Node version: ${{ matrix.node-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Test command: \`npm test -- --run\`" >> $GITHUB_STEP_SUMMARY

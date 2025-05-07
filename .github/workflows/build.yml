@@ -24,7 +24,9 @@ jobs:
         run: npm ci
         
       - name: Setup CI environment
-        run: ./.github/workflows/setup-ci.sh
+        run: |
+          chmod +x ./.github/workflows/setup-ci.sh
+          ./.github/workflows/setup-ci.sh
         
       - name: Build assets
         run: CI=true npm run build
@@ -34,3 +36,10 @@ jobs:
         with:
           name: build-artifacts
           path: public/build/
+          
+      - name: Show build summary
+        run: |
+          echo "## Build completed successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Built assets are available in the artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Use these assets for deployment" >> $GITHUB_STEP_SUMMARY

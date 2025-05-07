@@ -51,6 +51,11 @@ jobs:
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+          
+      - name: Setup CI environment
+        run: |
+          chmod +x ./.github/workflows/setup-ci.sh
+          ./.github/workflows/setup-ci.sh
 
       - name: Run PHP Static Analysis
         run: composer analyse
@@ -64,3 +69,12 @@ jobs:
         with:
           name: test-reports-php-${{ matrix.php }}-laravel-${{ matrix.laravel }}
           path: build/report.junit.xml
+          
+      - name: Show test summary
+        run: |
+          echo "## PHP Tests Completed :white_check_mark:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- PHP version: ${{ matrix.php }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Laravel version: ${{ matrix.laravel }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Test command: \`composer test\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Static analysis: \`composer analyse\`" >> $GITHUB_STEP_SUMMARY

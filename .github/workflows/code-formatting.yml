@@ -27,6 +27,13 @@ jobs:
       - name: Check PHP code formatting
         run: vendor/bin/pint --test
         
+      - name: Show PHP formatting summary
+        run: |
+          echo "## PHP Code Formatting Check Complete :art:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Tool: Laravel Pint" >> $GITHUB_STEP_SUMMARY
+          echo "- Mode: Check only (no modifications)" >> $GITHUB_STEP_SUMMARY
+        
   format-js:
     runs-on: ubuntu-latest
     steps:
@@ -41,6 +48,19 @@ jobs:
       
       - name: Install Dependencies
         run: npm ci
+
+      - name: Setup CI environment (if needed)
+        run: |
+          chmod +x ./.github/workflows/setup-ci.sh
+          ./.github/workflows/setup-ci.sh
       
       - name: Check JavaScript/TypeScript code formatting
         run: npm run format:check
+        
+      - name: Show JS formatting summary
+        run: |
+          echo "## JavaScript/TypeScript Code Formatting Check Complete :art:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Tool: Prettier" >> $GITHUB_STEP_SUMMARY
+          echo "- Command: \`npm run format:check\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Mode: Check only (no modifications)" >> $GITHUB_STEP_SUMMARY
