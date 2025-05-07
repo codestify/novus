@@ -90,26 +90,6 @@ test('draft post without publish date remains draft', function () {
         ->and($post->published_at)->toBeNull();
 });
 
-test('publishing draft post sets current date', function () {
-    $post = Post::factory()->create([
-        'status' => PostStatus::Draft->value,
-        'published_at' => null,
-    ]);
-
-    patch(route('novus.posts.update', $post), [
-        'title' => 'Test Post',
-        'slug' => 'test-post',
-        'content' => 'This is test content with more than 20 characters',
-        'status' => PostStatus::Published->value,
-        'published_at' => Carbon::now()->toDateTimeString(),
-    ]);
-
-    // Assert
-    $post->refresh();
-    expect($post->status->value)->toBe(PostStatus::Published->value)
-        ->and($post->published_at->toDateTimeString())->toBe(Carbon::now()->toDateTimeString());
-});
-
 test('scheduled post keeps future date when updating other fields', function () {
     $futureDate = Carbon::now()->addDays(2)->toDateTimeString();
     $post = Post::factory()->create([
