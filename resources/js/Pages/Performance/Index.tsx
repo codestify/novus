@@ -47,7 +47,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@novus/Components/ui/tabs";
-import { route } from "ziggy-js";
+import { route } from "ziggy";
 import { formatDateWithDay } from "@novus/utils";
 
 const Index = () => {

@@ -22,10 +22,11 @@ export default defineConfig({
     resolve: {
         alias: {
             "@novus": resolve(__dirname, "resources/js"),
-            "ziggy-js": isPackage
-                ? resolve(__dirname, "../../vendor/tightenco/ziggy")
-                : resolve(__dirname, "../../../tightenco/ziggy"),
+            "ziggy": resolve(__dirname, isPackage ? "vendor/tightenco/ziggy/dist/index.js" : "../../vendor/tightenco/ziggy/dist/index.js"),
         },
+    },
+    optimizeDeps: {
+        include: ['ziggy'],
     },
     base: '/vendor/novus/',
     build: {
