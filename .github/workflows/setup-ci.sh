@@ -19,4 +19,16 @@ for file in resources/js/Hooks/*; do
   fi
 done
 
+# Setup a mock ziggy-js directory
+echo "Setting up mock Ziggy for CI environment..."
+mkdir -p vendor/tightenco/ziggy
+
+# Create a basic mock file for Ziggy
+cat > vendor/tightenco/ziggy/index.js <<EOL
+/**
+ * Mock implementation for Ziggy in CI environment
+ */
+module.exports = require("../../resources/js/__mocks__/ziggy-js.ts");
+EOL
+
 echo "CI environment setup complete!"
