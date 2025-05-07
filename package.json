@@ -7,8 +7,8 @@
         "test": "vitest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
-        "format": "npx prettier --config .prettierrc --write \"resources/**/*.{js,jsx,ts,tsx}\"",
-        "format:check": "npx prettier --config .prettierrc --check \"resources/**/*.{js,jsx,ts,tsx}\""
+        "format": "npx prettier --write \"resources/**/*.{js,jsx,ts,tsx}\"",
+        "format:check": "npx prettier --check \"resources/**/*.{js,jsx,ts,tsx}\""
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.10",

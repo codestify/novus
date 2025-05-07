@@ -3,7 +3,8 @@
  * Used in testing and CI build environments when the real Ziggy package is not available
  */
 
-export default function route(name: string, params: any = {}, absolute: boolean = true): string {
+// Named export for the route function (for imports like `import { route } from "ziggy-js"`)
+export function route(name: string, params: any = {}, absolute: boolean = true): string {
   // Basic implementation that returns a mock route URL
   if (params && typeof params === 'object') {
     const paramString = Object.entries(params)
@@ -14,6 +15,10 @@ export default function route(name: string, params: any = {}, absolute: boolean 
   return `/mock/${name}`;
 }
 
+// Default export (for imports like `import route from "ziggy-js"`)
+export default route;
+
+// Export Ziggy configuration
 export const Ziggy = {
   // Mock routes configuration
   url: "http://localhost",
@@ -28,5 +33,6 @@ export const Ziggy = {
     "novus.media.index": { uri: "novus/media", methods: ["GET"] },
     "novus.subscribers.index": { uri: "novus/subscribers", methods: ["GET"] },
     "novus.auth.logout": { uri: "novus/auth/logout", methods: ["POST"] },
+    "novus.performance.index": { uri: "novus/performance", methods: ["GET"] },
   },
 };
