@@ -9,6 +9,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Shah\Novus\Enums\PostStatus;
+use Shah\Novus\Events\NewPostWasCreated;
+use Shah\Novus\Events\PostWasUpdated;
 use Shah\Novus\Models\Category;
 use Shah\Novus\Models\Post;
 use Shah\Novus\Models\Tag;
@@ -39,6 +41,8 @@ class PostService
 
         $this->handlePostRelationships($post, $data);
 
+        NewPostWasCreated::dispatch($post);
+
         return $post->fresh(['categories', 'tags', 'author', 'seoMeta', 'media']);
     }
 
@@ -64,6 +68,8 @@ class PostService
         ]);
 
         $this->handlePostRelationships($post, $data);
+
+        PostWasUpdated::dispatch($post);
 
         return $post->fresh(['categories', 'tags', 'author', 'seoMeta', 'media']);
     }
@@ -93,6 +99,13 @@ class PostService
             return [
                 'status' => PostStatus::Draft->value,
                 'published_at' => null,
+            ];
+        }
+
+        if ($providedStatus === PostStatus::Published->value) {
+            return [
+                'status' => PostStatus::Published->value,
+                'published_at' => $now->toDateTimeLocalString(),
             ];
         }
 
