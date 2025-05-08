@@ -96,6 +96,13 @@ class PostService
             ];
         }
 
+        if ($providedStatus === PostStatus::Published->value) {
+            return [
+                'status' => PostStatus::Published->value,
+                'published_at' => $now->toDateTimeLocalString(),
+            ];
+        }
+
         if ($date->isFuture()) {
             return [
                 'status' => PostStatus::Scheduled->value,
@@ -106,13 +113,6 @@ class PostService
         if ($date->isToday()) {
             return [
                 'status' => PostStatus::Draft->value,
-                'published_at' => $now->toDateTimeLocalString(),
-            ];
-        }
-
-        if ($date->isToday() && $providedStatus === PostStatus::Published->value) {
-            return [
-                'status' => PostStatus::Published->value,
                 'published_at' => $now->toDateTimeLocalString(),
             ];
         }
