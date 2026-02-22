@@ -1,84 +1,61 @@
-# This is my package novus
+# Novus CMS
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/codemystify/novus.svg?style=flat-square)](https://packagist.org/packages/codemystify/novus)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/codemystify/novus/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/codemystify/novus/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/codemystify/novus/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/codemystify/novus/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/codemystify/novus.svg?style=flat-square)](https://packagist.org/packages/codemystify/novus)
+Novus is a modern content management system (CMS) built specifically for Laravel applications. It combines the power of Laravel's backend with a sleek React-based admin interface for a seamless content management experience.
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## Features
 
-## Support us
+- **Modern Admin Interface** - Built with React, TypeScript, and Tailwind CSS
+- **Headless Architecture** - Separate your content management from presentation
+- **Rich Content Editor** - Create stunning posts with a powerful editor
+- **Media Management** - Comprehensive asset management with image optimization
+- **Categories & Tags** - Flexible content organization system
+- **SEO Tools** - Built-in tools for optimizing content visibility
+- **Google Analytics Integration** - Track traffic and user behavior
+- **AI-Powered Assistance** - Optional content enhancement tools
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/novus.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/novus)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
-## Installation
-
-You can install the package via composer:
+## Quick Install
 
 ```bash
+# Require the package
 composer require codemystify/novus
+
+# Run the installation command
+php artisan novus:prod
+
+# Create an admin user
+php artisan novus:create-author
+
+# Link storage
+php artisan storage:link
 ```
 
-You can publish and run the migrations with:
+After installation, access your CMS at: `https://your-site.com/novus`
 
-```bash
-php artisan vendor:publish --tag="novus-migrations"
-php artisan migrate
-```
+## Requirements
 
-You can publish the config file with:
+- PHP 8.2+
+- Laravel 11+
+- MySQL 8 or PostgreSQL 10+
+- Node.js 22+ & NPM (for development)
 
-```bash
-php artisan vendor:publish --tag="novus-config"
-```
+## Documentation
 
-This is the contents of the published config file:
+For complete documentation, visit:
+[https://novus.codemystify.com](https://novus.codemystify.com)
 
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="novus-views"
-```
-
-## Usage
-
-```php
-$novus = new Shah\Novus();
-echo $novus->echoPhrase('Hello, Shah!');
-```
-
-## Testing
-
-```bash
-composer test
-```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+The documentation covers:
+- Detailed installation instructions
+- Configuration options
+- Content management features
+- Google Analytics integration
+- AI features setup
+- Customization options
+- API usage
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Muhammad Ali Shah](https://github.com/codemystify)
-- [All Contributors](../../contributors)
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+Novus CMS is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
