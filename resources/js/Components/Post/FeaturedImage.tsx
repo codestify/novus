@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "@novus/Components/ui/button";
 import { Card } from "@novus/Components/ui/card";
 import { Input } from "@novus/Components/ui/input";
-import { Image, Upload, LinkIcon, X } from "lucide-react";
+import { Image, Upload, LinkIcon, X, Loader2 } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -13,56 +13,80 @@ import {
 import { FeaturedImageProps, MediaSelection } from "@novus/types/post";
 import { MediaItem } from "@novus/types/media";
 import { MediaSelector } from "@novus/Components/Media/MediaSelector";
+import useRoute from "@novus/Hooks/useRoute";
 
 const FeaturedImage: React.FC<FeaturedImageProps> = ({
     featuredImage,
     onChange,
     error,
 }) => {
-    // Use URL object references to avoid recreating them
-    const objectUrlRef = useRef<string | null>(null);
+    const route = useRoute();
     const [mediaDialogOpen, setMediaDialogOpen] = useState(false);
     const [selectedMediaItem, setSelectedMediaItem] =
         useState<MediaItem | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState<string | null>(null);
 
-    // Compute preview without extra state
+    // Compute preview URL from the current MediaSelection
     const preview = useMemo(() => {
         if (!featuredImage) {
             return null;
         }
 
-        if (featuredImage instanceof File) {
-            // Clean up previous URL if it exists
-            if (objectUrlRef.current) {
-                URL.revokeObjectURL(objectUrlRef.current);
-            }
-
-            // Create new URL and store the reference
-            objectUrlRef.current = URL.createObjectURL(featuredImage);
-            return objectUrlRef.current;
-        }
-
-        if ("fromLibrary" in featuredImage) {
+        if (typeof featuredImage === "object" && "url" in featuredImage) {
             return featuredImage.url;
         }
 
         return null;
     }, [featuredImage]);
 
-    // Clean up URL objects when unmounting
-    useEffect(() => {
-        return () => {
-            if (objectUrlRef.current) {
-                URL.revokeObjectURL(objectUrlRef.current);
-                objectUrlRef.current = null;
-            }
-        };
-    }, []);
+    // Upload file to media endpoint, then pass the media ID to onChange
+    const handleImageChange = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        if (!e.target.files || !e.target.files[0]) return;
 
-    // Handle file upload
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            onChange(e.target.files[0]);
+        const file = e.target.files[0];
+        setUploading(true);
+        setUploadError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("collection_name", "featured_image");
+
+            const response = await fetch(route("novus.media.upload"), {
+                method: "POST",
+                body: formData,
+                headers: {
+                    Accept: "application/json",
+                },
+                credentials: "same-origin",
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message || "Upload failed",
+                );
+            }
+
+            const selection: MediaSelection = {
+                id: result.media.id,
+                url: result.media.url || result.media.thumbnail_url,
+                fromLibrary: true,
+            };
+
+            onChange(selection);
+        } catch (err: any) {
+            setUploadError(
+                err.message || "Failed to upload image. Please try again.",
+            );
+        } finally {
+            setUploading(false);
+            // Reset file input so the same file can be re-selected
+            e.target.value = "";
         }
     };
 
@@ -107,10 +131,16 @@ const FeaturedImage: React.FC<FeaturedImageProps> = ({
             ) : (
                 <div className="border border-dashed rounded-md p-6 mt-3 flex flex-col items-center justify-center">
                     <div className="text-primary mb-2">
-                        <Upload className="h-10 w-10 mx-auto" />
+                        {uploading ? (
+                            <Loader2 className="h-10 w-10 mx-auto animate-spin" />
+                        ) : (
+                            <Upload className="h-10 w-10 mx-auto" />
+                        )}
                     </div>
                     <p className="text-sm text-muted-foreground text-center mb-4">
-                        Drag & drop an image or select from the options below
+                        {uploading
+                            ? "Uploading..."
+                            : "Drag & drop an image or select from the options below"}
                     </p>
                     <div className="flex gap-3">
                         <Input
@@ -119,11 +149,13 @@ const FeaturedImage: React.FC<FeaturedImageProps> = ({
                             className="hidden"
                             id="featured-image-upload"
                             onChange={handleImageChange}
+                            disabled={uploading}
                         />
                         <Button
                             type="button"
                             variant="outline"
                             size="sm"
+                            disabled={uploading}
                             onClick={() =>
                                 document
                                     .getElementById("featured-image-upload")
@@ -137,6 +169,7 @@ const FeaturedImage: React.FC<FeaturedImageProps> = ({
                             type="button"
                             variant="secondary"
                             size="sm"
+                            disabled={uploading}
                             onClick={() => setMediaDialogOpen(true)}
                         >
                             <LinkIcon className="h-4 w-4 mr-2" />
@@ -148,7 +181,11 @@ const FeaturedImage: React.FC<FeaturedImageProps> = ({
             <p className="text-xs text-muted-foreground mt-2">
                 Recommended size: 1200×630 pixels
             </p>
-            {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
+            {(error || uploadError) && (
+                <div className="text-red-500 text-sm mt-1">
+                    {error || uploadError}
+                </div>
+            )}
 
             <Dialog open={mediaDialogOpen} onOpenChange={setMediaDialogOpen}>
                 <DialogContent className="max-w-4xl h-[80vh]">
