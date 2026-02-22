@@ -73,14 +73,13 @@ export default function Create() {
             e.preventDefault();
             startSaving();
 
-            // Fix the null reference error with proper type checking
             const formData = {
                 ...data,
                 content,
                 featured_image:
                     data.featured_image &&
                     typeof data.featured_image === "object" &&
-                    !(data.featured_image instanceof File)
+                    "id" in data.featured_image
                         ? (data.featured_image as any).id
                         : data.featured_image,
             };

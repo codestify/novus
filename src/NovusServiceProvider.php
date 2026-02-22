@@ -226,22 +226,21 @@ class NovusServiceProvider extends PackageServiceProvider
 
     private function createAssetSymlinksForDevelopment(string $sourcePath, string $targetPath): void
     {
-        if (is_dir($sourcePath)) {
-            $publicVendorPath = dirname($targetPath);
-
-            if (! is_dir($publicVendorPath)) {
-                File::makeDirectory($publicVendorPath, 0755, true);
-            }
-
-            if (is_dir($targetPath) || is_link($targetPath)) {
-                if (is_link($targetPath)) {
-                    File::delete($targetPath);
-                } else {
-                    File::deleteDirectory($targetPath);
-                }
-            }
-
-            File::link($sourcePath, $targetPath);
+        if (! is_dir($sourcePath)) {
+            return;
         }
+
+        // Skip if the target already exists (real directory or symlink)
+        if (is_link($targetPath) || is_dir($targetPath)) {
+            return;
+        }
+
+        $publicVendorPath = dirname($targetPath);
+
+        if (! is_dir($publicVendorPath)) {
+            File::makeDirectory($publicVendorPath, 0755, true);
+        }
+
+        File::link($sourcePath, $targetPath);
     }
 }

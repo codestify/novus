@@ -40,35 +40,29 @@ export function extractFeaturedImage(post: any): MediaSelection | null {
 }
 
 /**
- * Process a featured image for API submission
- * Converts from various types (MediaSelection, File, string, null) to the format expected by the API
+ * Process a featured image for API submission.
+ * Converts from MediaSelection or numeric ID to the number expected by the API.
+ * File uploads are now handled by FeaturedImage component directly via the
+ * media upload endpoint, so Files should never reach this function.
  */
 export function processFeaturedImageForSubmission(
-    featuredImage: MediaSelection | File | string | number | null,
+    featuredImage: MediaSelection | string | number | null,
 ): number | null {
     if (featuredImage === null) {
         return null;
     }
 
-    // Handle different types of featuredImage
-    if (typeof featuredImage === "object") {
-        if (featuredImage instanceof File) {
-            // File objects are handled by FormData, return as is
-            return featuredImage as any;
-        } else if ("id" in featuredImage) {
-            // Convert MediaSelection to just the ID number
-            return Number(featuredImage.id);
-        }
-    } else if (typeof featuredImage === "string") {
-        // Convert string IDs to numbers if they're numeric
-        if (!isNaN(Number(featuredImage))) {
-            return Number(featuredImage);
-        }
-    } else if (typeof featuredImage === "number") {
-        // If it's already a number, return it directly
+    if (typeof featuredImage === "object" && "id" in featuredImage) {
+        return Number(featuredImage.id);
+    }
+
+    if (typeof featuredImage === "string" && !isNaN(Number(featuredImage))) {
+        return Number(featuredImage);
+    }
+
+    if (typeof featuredImage === "number") {
         return featuredImage;
     }
 
-    // If we couldn't process it, return null
     return null;
 }

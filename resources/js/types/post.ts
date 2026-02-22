@@ -50,7 +50,7 @@ export interface PostType extends PostBase {
 
 export interface PostFormData extends PostBase {
     is_featured: boolean;
-    featured_image: MediaSelection | File | number | null;
+    featured_image: MediaSelection | number | null;
     seo_title: string;
     seo_description: string;
     seo_keywords: string;
@@ -107,8 +107,8 @@ export interface PostSettingsProps extends BaseFormProps {
 export interface TabProps extends BaseFormProps {}
 
 export interface FeaturedImageProps {
-    featuredImage: MediaSelection | File | null;
-    onChange: (value: MediaSelection | File | null) => void;
+    featuredImage: MediaSelection | null;
+    onChange: (value: MediaSelection | null) => void;
     error?: string;
 }
 
