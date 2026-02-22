@@ -89,34 +89,10 @@ class PostService
         $now = now();
         $date = $providedDate ? Carbon::parse($providedDate) : null;
 
+        // No date provided: respect the user's status choice
         if ($date === null) {
-            return [
-                'status' => PostStatus::Draft->value,
-                'published_at' => null,
-            ];
-        }
-
-        if ($date->isFuture()) {
-            return [
-                'status' => PostStatus::Scheduled->value,
-                'published_at' => $date->toDateTimeLocalString(),
-            ];
-        }
-
-        if ($date->isToday()) {
-            return [
-                'status' => PostStatus::Draft->value,
-                'published_at' => $now->toDateTimeLocalString(),
-            ];
-        }
-
-        if ($date->isPast()) {
-            if ($providedStatus === PostStatus::Draft->value) {
-                return [
-                    'status' => PostStatus::Draft->value,
-                    'published_at' => $date->toDateTimeLocalString(),
-                ];
-            } elseif ($providedStatus === PostStatus::Scheduled->value) {
+            // If user wants to publish now, set the date to now
+            if ($providedStatus === PostStatus::Published->value) {
                 return [
                     'status' => PostStatus::Published->value,
                     'published_at' => $now->toDateTimeLocalString(),
@@ -124,15 +100,31 @@ class PostService
             }
 
             return [
-                'status' => PostStatus::Published->value,
-                'published_at' => $now->toDateTimeLocalString(),
+                'status' => PostStatus::Draft->value,
+                'published_at' => null,
             ];
-
         }
 
+        // Future date: schedule regardless of what user selected
+        if ($date->isFuture()) {
+            return [
+                'status' => PostStatus::Scheduled->value,
+                'published_at' => $date->toDateTimeLocalString(),
+            ];
+        }
+
+        // Today or past: respect the user's explicit status choice
+        if ($providedStatus === PostStatus::Draft->value) {
+            return [
+                'status' => PostStatus::Draft->value,
+                'published_at' => $date->isToday() ? $now->toDateTimeLocalString() : $date->toDateTimeLocalString(),
+            ];
+        }
+
+        // User wants published (or scheduled with a past date) — publish it
         return [
-            'status' => PostStatus::Draft->value,
-            'published_at' => null,
+            'status' => PostStatus::Published->value,
+            'published_at' => $date->isToday() ? $now->toDateTimeLocalString() : $date->toDateTimeLocalString(),
         ];
     }
 
