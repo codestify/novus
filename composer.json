@@ -17,18 +17,18 @@
     ],
     "require": {
         "php": "^8.2",
+        "ext-dom": "*",
+        "ext-libxml": "*",
         "google/analytics-data": "^0.22.2",
         "illuminate/contracts": "^10.0||^11.0||^12.0",
         "inertiajs/inertia-laravel": "^2.0",
         "intervention/image": "^3.11",
         "intervention/image-laravel": "^1.5",
         "laravel/prompts": "^0.3.5",
-        "prism-php/prism": "^0.61.0",
+        "prism-php/prism": "^0.99",
         "spatie/laravel-medialibrary": "^11.12",
         "spatie/laravel-package-tools": "^1.16",
-        "tightenco/ziggy": "^2.0",
-        "ext-libxml": "*",
-        "ext-dom": "*"
+        "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
         "larastan/larastan": "^2.9||^3.0",
