@@ -25,8 +25,7 @@ import {
 } from "@novus/Components/ui/dropdown-menu";
 
 import { Button } from "@novus/Components/ui/button";
-import { Input } from "@novus/Components/ui/input";
-import { Badge } from "@novus/Components/ui/badge";
+import Logo from "@novus/Components/Logo";
 import { useTheme } from "../providers/ThemeProvider";
 import useRoute from "@novus/Hooks/useRoute";
 import { Author } from "@novus/types";
@@ -55,29 +54,7 @@ const TopBar: React.FC<TopBarProps> = ({
     return (
         <header className="fixed top-0 inset-x-0 h-16 bg-background/95 backdrop-blur-sm border-b z-40 flex items-center justify-between px-4 shadow-sm">
             <div className="flex items-center gap-4">
-                <div className="flex items-center">
-                    <div className="flex items-center">
-                        <div className="h-8 w-8 flex items-center justify-center rounded-md bg-primary/10 text-primary">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="h-5 w-5"
-                            >
-                                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                                <path d="M2 17l10 5 10-5" />
-                                <path d="M2 12l10 5 10-5" />
-                            </svg>
-                        </div>
-                        <span className="ml-2 text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                            Novus
-                        </span>
-                    </div>
-                </div>
+                <Logo />
 
                 <Button
                     variant="ghost"

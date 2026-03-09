@@ -5,6 +5,7 @@ namespace Shah\Novus\Http\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
+use Shah\Novus\Contracts\LogoProvider;
 use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
@@ -36,6 +37,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'app_url' => config('app.name'),
+            'logo' => app(LogoProvider::class)->getLogo(),
             'auth' => [
                 'user' => Auth::guard('novus')->user(),
             ],

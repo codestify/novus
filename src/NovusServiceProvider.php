@@ -9,6 +9,7 @@ use Shah\Novus\Commands\CreateAuthorCommand;
 use Shah\Novus\Commands\NovusDevCommand;
 use Shah\Novus\Commands\NovusProdCommand;
 use Shah\Novus\Contracts\Accessible;
+use Shah\Novus\Contracts\LogoProvider;
 use Shah\Novus\Http\Middleware\HandleInertiaRequests;
 use Shah\Novus\Http\Middleware\NovusAuthenticate;
 use Shah\Novus\Http\Middleware\RedirectIfNovusAuthenticated;
@@ -16,6 +17,7 @@ use Shah\Novus\Models\Author;
 use Shah\Novus\Services\AI\AiService;
 use Shah\Novus\Services\AI\PromptService;
 use Shah\Novus\Services\Auth\AccessResolver;
+use Shah\Novus\Services\DefaultLogoProvider;
 use Spatie\LaravelPackageTools\Commands\InstallCommand as SpatieInstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -58,6 +60,12 @@ class NovusServiceProvider extends PackageServiceProvider
             );
 
             return $app->make($accessResolver);
+        });
+
+        $this->app->bind(LogoProvider::class, function ($app) {
+            $provider = config('novus.logo_provider', DefaultLogoProvider::class);
+
+            return $app->make($provider);
         });
 
         $this->registerPrismConfiguration();

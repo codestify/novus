@@ -38,6 +38,7 @@ export type InertiaSharedProps<T = {}> = T & {
         isLoggedIn: boolean;
     };
     app_url: string;
+    logo: string;
     errorBags: any;
     errors: any;
     blog_post: Nullable<PostType>;

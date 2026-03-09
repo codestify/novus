@@ -82,6 +82,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Logo Provider
+    |--------------------------------------------------------------------------
+    |
+    | You may provide your own custom logo provider by implementing the
+    | \Shah\Novus\Contracts\LogoProvider interface. Novus will use your
+    | class instead of the default, allowing full control over how logos
+    | are displayed throughout the dashboard.
+    |
+    */
+
+    'logo_provider' => \Shah\Novus\Services\DefaultLogoProvider::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Media Image Sizes
     |--------------------------------------------------------------------------
     |
